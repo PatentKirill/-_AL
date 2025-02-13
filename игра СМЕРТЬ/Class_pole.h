@@ -1,9 +1,9 @@
-
+#pragma once
 #include "Class_object.h"
-
 #include "include.h"
+#include <fstream>
 
-Players player{ 2, 3, '@' };
+Player player{ '@' };
 
 
 
@@ -11,183 +11,86 @@ Players player{ 2, 3, '@' };
 class Total_pole
 {
 protected:
-	
-	Object wall{1, 1, '|'};
-	Wall* mas_wall;
-	
-    int kol_wall;
-	int current_wall;
-	char** pole;
 	int raz_i;
 	int raz_g;
+	Object base{ '*' };
+	Wall wall{ '|' };
+	std::ifstream file;
+	Object*** pole;
 public:
-	
-	Total_pole(int rows, int columns, int kol_wall)
+
+	Total_pole(char* name_file)
 	{
-
-		if (kol_wall < 1)
+		file.open(name_file);
+		if (file.is_open())
 		{
-			kol_wall = 1;
-		}
-		this->kol_wall = kol_wall;
-		current_wall = 0;
-		raz_i = rows;
-		raz_g = columns;
-		pole = new char* [rows];
-		// выделяем память под двухмерный массив
-		mas_wall = new Wall[kol_wall];
-		for (int i = 0; i < rows; i++)
-		{
-			pole[i] = new char[columns];
-		}
-
-
-		for (int i = 0; i < raz_i; i++)
-		{
-			for (int g = 0; g < raz_g; g++)
-			{
-				pole[i][g] = '*';
+			char sign;
+			file >> raz_i;
+			file >> raz_g;
 			
-			}
-		}
-		
-		
-	}
-	~Total_pole()
-	{
+			Sleep(3000);
+			pole = new Object * *[raz_i];
+			// выделяем память под двухмерный массив
 
-		for (int i = 0; i < raz_i; i++)
-		{
-			delete[] pole[i];
-		}
-		delete[] pole;
-		delete[] mas_wall;
-	}
-	void print() 
-	{
-		
-		system("cls");
-		
-		for (int i = 0; i < raz_i; i++)
-		{
-			for (int g = 0; g < raz_g; g++)
+			for (int i = 0; i < raz_i; i++)
 			{
-				std::cout << pole[i][g];
+				pole[i] = new Object * [raz_g];
 			}
-			std::cout << "\n";
-		}
-	}
-	void prov_object() 
-	{};
-	void prov_wall()
-	{
-		for (int i = 0; i < raz_i; i++)
-		{
-			for (int g = 0; g < raz_g; g++)
+			file.get(sign);
+			while (sign != '\n')
 			{
-				for (int j = 0; j < this->kol_wall; j++)
+				file.get(sign);
+			}
+			for (int i = 0; i < raz_i; i++)
+			{
+				for (int g = 0; g < raz_g; g++)
 				{
-					if (i == mas_wall[j].get_i() && g == mas_wall[j].get_g())
+					file.get(sign);
+					if (sign == base.get_sign())
 					{
-						pole[i][g] = '|';
+						pole[i][g] = &base;
+					}
+					else if (sign == wall.get_sign())
+					{
+						pole[i][g] = &wall;
+					}
+					else if (sign == player.get_sign())
+					{
+						pole[i][g] = &player;
+					}
+					else if (sign == '\n')
+					{
+						g--;
+					}
+					else
+					{
+						pole[i][g] = &base;
 					}
 				}
 			}
+			while (file.get(sign))
+			{
+				
+			}
 		}
-	}
-	void place_wall()
-	{
+		else
+		{
+			std::cout << "Ошибка. Файл не удалось открыть\n";
+		}
+
+
 
 	}
-	void w()
+
+	void print()
 	{
-		if (
-			(player.get_i() - 1) >= 0 &&
-			pole[player.get_i() - 1][player.get_g()]  != mas_wall[0].get_sign()
-			)
+		for (int i = 0; i < raz_i; i++)
 		{
-			pole[player.get_i()][player.get_g()] = '*';
-			player.w();
-			pole[player.get_i()][player.get_g()] = player.get_sign();
-			print();
-		}
-	}
-	void s()
-	{
-		if (
-			(player.get_i() + 1) < raz_i &&
-			pole[player.get_i() + 1][player.get_g()] != mas_wall[0].get_sign()
-			)
-		{
-			pole[player.get_i()][player.get_g()] = '*';
-			player.s();
-			pole[player.get_i()][player.get_g()] = player.get_sign();
-			print();
-		}
-	}
-	void a()
-	{
-		if (
-			(player.get_g() - 1) >= 0 &&
-			pole[player.get_i()][player.get_g() - 1] != mas_wall[0].get_sign()
-			)
-		{
-			pole[player.get_i()][player.get_g()] = '*';
-			player.a();
-			pole[player.get_i()][player.get_g()] = player.get_sign();
-			print();
-		}
-	}
-	void d()
-	{
-		if (
-			(player.get_g() + 1) < raz_g &&
-			pole[player.get_i()][player.get_g() + 1] != mas_wall[0].get_sign()
-			)
-		{
-			pole[player.get_i()][player.get_g()] = '*';
-			player.d();
-			pole[player.get_i()][player.get_g()] = player.get_sign();
-			print();
+			for (int g = 0; g < raz_g; g++)
+			{
+				std::cout << pole[i][g]->get_sign();
+			}
+		    std::cout << "\n";
 		}
 	}
 };
-
-class Start_pole: public Total_pole
-{
-	Object iii{ 0, 3, 'X' };
-	void place_wall()
-	{
-		for (int i = 0; i < 5; i++)
-		{
-			
-			mas_wall[i].set_i_g(i, i);
-			current_wall++;
-		}
-		for (int i = current_wall; i < kol_wall; i++)
-		{
-			mas_wall[i].set_i_g(i, 9);
-			current_wall++;
-		}
-	}
-	
-public:
-	Start_pole(int rows, int columns, int kol_wall) :Total_pole(rows, columns, kol_wall)
-	{
-		
-		
-		place_wall();
-		prov_wall();
-		pole[9][5] = iii.get_sign();
-	}
-	void prov_x()
-	{
-		if (iii.get_i() == player.get_i() && iii.get_g() == player.get_g())
-		{
-			std::cout << "\n\nBUUUUU\n";
-			Sleep(3000);
-		}
-	}
-	
-};
-

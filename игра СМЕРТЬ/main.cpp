@@ -1,13 +1,11 @@
 #include "include.h"
 #include "Class_pole.h"
-#include <future>
-#include <thread>
 
+char name[100]{ "file.txt" };
+Total_pole pole( name );
 
-Start_pole pole{ 10, 10, 20};
-
-//aaaaaaaaadffffdftyhgyhddffggsdf
-void control()
+//aaaaaaaaadffffdftyhgyhddffggsdfersdzaa
+/*void control()
 {
 	while (1)
 	{
@@ -45,4 +43,9 @@ int main()
 		(0 << 4) | 11);
 	std::cout << "AAAA";
 	std::future<void> f_1 = std::async(control);
+}
+*/
+int main()
+{
+	pole.print();
 }

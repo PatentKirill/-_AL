@@ -1,5 +1,4 @@
-
-//f
+#pragma once
 
 
 class Object
@@ -9,11 +8,15 @@ protected:
 	int g;
 	char sign;
 public:
-	Object(int i, int g, char sign)
+	bool object_prov(char** pole, int i_player, int g_player)
 	{
-		this->i = i;
-		this->g = g;
+		return pole[i_player][g_player] == sign;
+	}
+	Object(char sign)
+	{
 		this->sign = sign;
+		i = -1;
+		g = -1;
 	}
 	Object()
 	{
@@ -40,10 +43,8 @@ class Wall: public Object
 {
 	
 public:
-	Wall() : Object()
-	{
-		sign = '|';
-	}
+	Wall(char sign) : Object(sign)
+	{}
 	void set_i_g(int i, int g)
 	{
 		this->i = i;
@@ -53,12 +54,12 @@ public:
 };
 
 
-class Players: public Object
+class Player: public Object
 {
 public:
-	Players(int x, int y, char sign) : Object(x, y, sign)
+	Player(char sign) : Object(sign)
 	{}
-	Players() : Object()
+	Player() : Object()
 	{}
 	void set_player(int i, int g, char sign)
 	{
