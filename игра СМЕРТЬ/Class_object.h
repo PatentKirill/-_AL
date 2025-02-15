@@ -1,28 +1,60 @@
 #pragma once
-
+#include "color.h"
 
 class Object
 {
 protected:
-	int i;
-	int g;
+	bool passable;
 	char sign;
+	ConsoleColor text;
+	ConsoleColor baground;
 public:
 	bool object_prov(char** pole, int i_player, int g_player)
 	{
 		return pole[i_player][g_player] == sign;
 	}
-	Object(char sign)
-	{
-		this->sign = sign;
-		i = -1;
-		g = -1;
-	}
+	Object(char sign, ConsoleColor text, ConsoleColor baground, bool passable): sign{sign}, 
+	text{text}, baground{baground}, passable{passable}
+	{}
 	Object()
 	{
-		i = -1;
-		g = -1;
 		sign = ' ';
+	}
+	void print()
+	{
+		SetColor(text, baground);
+		std::cout << sign;
+		SetColor(LightGray, Black);
+	}
+	
+	bool get_passable()
+	{
+		return passable;
+	}
+
+	char get_sign()
+	{
+		return sign;
+	}
+	
+};
+
+class Living_Object: public Object
+{
+protected:
+	int i;
+	int g;
+	int HP;
+	Object* recent_object;
+	Living_Object(char sign, ConsoleColor text, ConsoleColor baground) : Object(sign, text, baground, false), i{ -1 }, g{ -1 }, HP{ 100 }
+	{
+
+	}
+public:
+	void set_i_g(int i, int g)
+	{
+		this->i = i;
+		this->g = g;
 	}
 	int get_i()
 	{
@@ -32,41 +64,24 @@ public:
 	{
 		return g;
 	}
-	char get_sign()
+	void set_recent_object(Object* object)
 	{
-		return sign;
+		recent_object = object;
 	}
-	
-};
-
-class Wall: public Object
-{
-	
-public:
-	Wall(char sign) : Object(sign)
-	{}
-	void set_i_g(int i, int g)
+	Object* get_recent_object()
 	{
-		this->i = i;
-		this->g = g;
+		return recent_object;
 	}
-	
 };
 
 
-class Player: public Object
+class Player: public Living_Object
 {
 public:
-	Player(char sign) : Object(sign)
+	Player(char sign, ConsoleColor text, ConsoleColor baground) : Living_Object(sign, text, baground)
 	{}
-	Player() : Object()
-	{}
-	void set_player(int i, int g, char sign)
-	{
-		this->i = i;
-		this->g = g;
-		this->sign = sign;
-	}
+	
+
 	void w()
 	{
 		i--;

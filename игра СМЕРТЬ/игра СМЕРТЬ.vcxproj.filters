@@ -29,5 +29,11 @@
     <ClInclude Include="include.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
+    <ClInclude Include="color.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="Class_item.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

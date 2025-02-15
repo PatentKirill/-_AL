@@ -130,8 +130,10 @@
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Class_item.h" />
     <ClInclude Include="Class_object.h" />
     <ClInclude Include="Class_pole.h" />
+    <ClInclude Include="color.h" />
     <ClInclude Include="include.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

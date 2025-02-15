@@ -5,29 +5,30 @@ char name[100]{ "file.txt" };
 Total_pole pole( name );
 
 //aaaaaaaaadffffdftyhgyhddffggsdfersdzaa
-/*void control()
+void control()
 {
-	while (1)
+	int time{ 300 };
+	while (true)
 	{
 		if (GetKeyState('W') & 0x8000)
 		{
 			pole.w();
-			Sleep(500);
+			Sleep(time);
 		}
 		else if (GetKeyState('S') & 0x8000)
 		{
 			pole.s();
-			Sleep(500);
+			Sleep(time);
 		}
 		else if (GetKeyState('A') & 0x8000)
 		{
 			pole.a();
-			Sleep(500);
+			Sleep(time);
 		}
 		else if (GetKeyState('D') & 0x8000)
 		{
 			pole.d();
-			Sleep(500);
+			Sleep(time);
 		}
 	}
 	
@@ -35,17 +36,10 @@ Total_pole pole( name );
 
 int main()
 {
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
-		(0 << 4) | 10);
 	
 	pole.print();
-	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE),
-		(0 << 4) | 11);
-	std::cout << "AAAA";
+	
 	std::future<void> f_1 = std::async(control);
 }
-*/
-int main()
-{
-	pole.print();
-}
+
+
