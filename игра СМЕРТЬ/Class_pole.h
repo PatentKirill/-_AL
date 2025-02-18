@@ -2,6 +2,7 @@
 #include "Class_object.h"
 #include "include.h"
 #include <fstream>
+#include <Windows.h>
 
 
 
@@ -10,13 +11,13 @@
 class Total_pole
 {
 protected:
-	int raz_i;
+	int raz_i; //размеры поля
 	int raz_g;
-	Object base;
+	Object base; //базовый блок
 	Object wall;
 	std::ifstream file;
 	Object*** pole;
-	static Player player;
+	static Player player;//игрок
 
 public:
 
@@ -27,7 +28,7 @@ public:
 		if (file.is_open())
 		{
 			char sign;
-			file >> raz_i;
+			file >> raz_i; //считывание разеров из файла
 			file >> raz_g;
 			
 			Sleep(3000);
@@ -39,11 +40,11 @@ public:
 				pole[i] = new Object * [raz_g];
 			}
 			file.get(sign);
-			while (sign != '\n')
+			while (sign != '\n')//ищем переход на новую строчку
 			{
 				file.get(sign);
 			}
-			for (int i = 0; i < raz_i; i++)
+			for (int i = 0; i < raz_i; i++)//чтение из файла и запись в поле
 			{
 				for (int g = 0; g < raz_g; g++)
 				{
@@ -71,10 +72,7 @@ public:
 					}
 				}
 			}
-			while (file.get(sign))
-			{
-				
-			}
+			
 		}
 		else
 		{
@@ -85,19 +83,36 @@ public:
 
 	}
 
-	void print()
+	void work_inventory()
+	{
+		system("cls");
+	
+		player.work_inventory();
+	}
+
+	void print()//вывод
 	{
 		system("cls");
 		for (int i = 0; i < raz_i; i++)
 		{
 			for (int g = 0; g < raz_g; g++)
 			{
-				pole[i][g]->print();
+				if (
+					player.get_i() + player.get_lighting_level() >= i && player.get_i() - player.get_lighting_level() <= i &&
+					player.get_g() + player.get_lighting_level() >= g && player.get_g() - player.get_lighting_level() <= g
+					)
+				{
+					pole[i][g]->print();
+				}
+				else
+				{
+					std::cout << ' ';
+				}
 			}
 		    std::cout << "\n";
 		}
 	}
-	void w()
+	void w()//для ходьбы
 	{
 		if (pole[player.get_i() - 1][player.get_g()]->get_passable())
 		{
@@ -159,4 +174,4 @@ public:
 	}
 };
 
-Player Total_pole::player{'@', Yellow, Black};
+Player Total_pole::player{ '@', Yellow, Black, 100, 10, 10 };

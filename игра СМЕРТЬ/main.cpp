@@ -30,13 +30,19 @@ void control()
 			pole.d();
 			Sleep(time);
 		}
+		else if (GetKeyState(VK_ESCAPE) & 0x8000)
+		{
+			pole.work_inventory();
+			Sleep(time);
+		}
 	}
 	
 }
 
 int main()
 {
-	
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 	pole.print();
 	
 	std::future<void> f_1 = std::async(control);

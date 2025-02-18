@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <iostream>
 
-enum ConsoleColor
+enum ConsoleColor //это всё для установки цвета
 {
     Black = 0,
     Blue = 1,
