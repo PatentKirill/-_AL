@@ -35,6 +35,7 @@ void control()
 			pole.work_inventory();
 			Sleep(time);
 		}
+		
 	}
 	
 }

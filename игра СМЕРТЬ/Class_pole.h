@@ -88,6 +88,7 @@ public:
 		system("cls");
 	
 		player.work_inventory();
+		print();
 	}
 
 	void print()//вывод

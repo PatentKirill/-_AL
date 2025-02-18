@@ -98,16 +98,17 @@ public:
 		}
 		inventory[1] = new Wooden_Sword;
 		inventory[2] = new Health_Potion;
+		inventory[3] = new Torch;
 	}
 	void work_inventory()
 	{
+		std::cout << "HP: " << HP << "\t\t" << "MAX_HP: " << max_HP << "\t\t" << "Damage: " << damage << "\t\t" << "Defence: " << defence << "\t\t" << "Уровеь освещения; " << lighting_level << "\n\n\n";
 		std::cout << "Рука:" << std::right << std::setw(22) << inventory[0]->get_name() << std::right  << std::setw(22) << inventory[0]->get_description() << '\n';
 		for (int i = 1; i < raz_inventory; i++)
 		{
-			
-			std::cout << i << std::right << std::setw(22) << inventory[i]->get_name() << std::right << std::setw(22) << inventory[i]->get_description() << '\n';
+
+			std::cout << i << "\t\t\t\t" << inventory[i]->get_name() << "\t\t\t\t" << inventory[i]->get_description() << '\n';
 		}
-		std::cout << HP << '\t' << max_HP << '\t' << damage << '\t' << defence << '\t' << lighting_level << "\n";
 		std::cout << "\n\nЧто вы хотите сделать? 0 - поставить предмет в руку\n";
 		bool prov{true};
 		Sleep(1000);
@@ -118,7 +119,7 @@ public:
 			{
 				
 			
-				std::cout << "AA";
+				std::cout << "Введите номер предмета который хотите поместить в руку\n";
 				inventory[0]->deactivate_use(HP, max_HP, damage, defence, lighting_level);
 				int num{-1};
 				while (num == -1)
@@ -149,6 +150,7 @@ public:
 			{
 	
 				prov = false;
+				
 			}
 		}
 		
