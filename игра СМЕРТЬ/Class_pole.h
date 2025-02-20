@@ -20,7 +20,10 @@ protected:
 	static Player player;//игрок
 
 public:
-
+	Player& get_player()
+	{
+		return player;
+	}
 	Total_pole(char* name_file): raz_i{},raz_g{}, base{' ', LightGray, Black, true}, wall{'|', DarkGray, DarkGray, false}
 	{
 		player.set_recent_object(&base);
@@ -85,7 +88,7 @@ public:
 
 	void work_inventory()
 	{
-		system("cls");
+		
 	
 		player.work_inventory();
 		print();

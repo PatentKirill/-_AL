@@ -53,7 +53,7 @@ protected:
 	int damage;
 	int defence;
 	Object* recent_object;//блок над которым стоит существо
-	Living_Object(char sign, ConsoleColor text, ConsoleColor baground, int max_HP, int Damage, int Defence) : Object(sign, text, baground, false), i{ -1 }, g{ -1 }, HP{ max_HP }, 
+	Living_Object(char sign, ConsoleColor text, ConsoleColor baground, int max_HP, int Damage, int Defence) : Object(sign, text, baground, false), i{ -1 }, g{ -1 }, HP{ 100 }, 
 	max_HP{ max_HP }, damage{Damage}, defence{Defence}
 	{}
 public:
@@ -100,16 +100,22 @@ public:
 		inventory[2] = new Health_Potion;
 		inventory[3] = new Torch;
 	}
-	void work_inventory()
+	void print_inventory()
 	{
+		system("cls");
 		std::cout << "HP: " << HP << "\t\t" << "MAX_HP: " << max_HP << "\t\t" << "Damage: " << damage << "\t\t" << "Defence: " << defence << "\t\t" << "Уровеь освещения; " << lighting_level << "\n\n\n";
-		std::cout << "Рука:" << std::right << std::setw(22) << inventory[0]->get_name() << std::right  << std::setw(22) << inventory[0]->get_description() << '\n';
+		std::cout << "Рука:" << std::right << std::setw(22) << inventory[0]->get_name() << std::right << std::setw(22) << inventory[0]->get_description() << '\n';
 		for (int i = 1; i < raz_inventory; i++)
 		{
 
 			std::cout << i << "\t\t\t\t" << inventory[i]->get_name() << "\t\t\t\t" << inventory[i]->get_description() << '\n';
 		}
-		std::cout << "\n\nЧто вы хотите сделать? 0 - поставить предмет в руку\n";
+		std::cout << "\n\nЧто вы хотите сделать? 0 - поставить предмет в руку; U - использовать предмет\n";
+	}
+	void work_inventory()
+	{
+		print_inventory();
+
 		bool prov{true};
 		Sleep(1000);
 		while (prov == true)
@@ -117,8 +123,6 @@ public:
 			
 			if (GetKeyState('0') & 0x8000)
 			{
-				
-			
 				std::cout << "Введите номер предмета который хотите поместить в руку\n";
 				inventory[0]->deactivate_use(HP, max_HP, damage, defence, lighting_level);
 				int num{-1};
@@ -143,9 +147,42 @@ public:
 				{
 					std::cout << "Этот предмет нельзя поместить в руку\n";
 				}
+				print_inventory();
 				Sleep(300);
 			}
 			
+			if (GetKeyState('U') & 0x8000)
+			{
+
+
+				std::cout << "Введите номер предмета который хотите использовать\n";
+				inventory[0]->deactivate_use(HP, max_HP, damage, defence, lighting_level);
+				int num{ -1 };
+				while (num == -1)
+				{
+					for (int i = 0; i <= 9; ++i)
+					{
+						if (GetKeyState('0' + i) & 0x8000)
+						{
+							num = i;
+
+							break;
+						}
+
+					}
+				}
+				if (inventory[num]->use(HP, max_HP, damage, defence, lighting_level))
+				{
+					std::cout << "Предмет использован\n";
+				}
+				else
+				{
+					std::cout << "Этот предмет нельзя использовать\n";
+				}
+				print_inventory();
+				Sleep(300);
+			}
+
 			else if (GetKeyState(VK_ESCAPE) & 0x8000)
 			{
 	

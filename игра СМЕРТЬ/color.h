@@ -1,6 +1,7 @@
 #pragma once
 #include <windows.h>
 #include <iostream>
+#include "Class_item.h"
 
 enum ConsoleColor //это всё для установки цвета
 {
