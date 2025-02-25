@@ -3,7 +3,7 @@
 #include "include.h"
 #include <fstream>
 #include <Windows.h>
-#include "ID_Object.h"
+//#include "ID_Object.h"
 
 
 
@@ -90,31 +90,35 @@ public:
 		{
 			player.load("player_save.txt");
 		}
-		char sign;
-		for (int i = 0; i < raz_i; i++)//чтение из файла и запись в поле
+		if (file.is_open())
 		{
-			for (int g = 0; g < raz_g; g++)
+			char sign;
+			for (int i = 0; i < raz_i; i++)//чтение из файла и запись в поле
 			{
-				file.get(sign);
-				if (sign == '\n')
+				for (int g = 0; g < raz_g; g++)
 				{
-					g--;
-				}
-				else if (sign == player.get_sign())
-				{
-					pole[i][g] = &player;
-					player.set_i_g(i, g);
-				}
-				else if (ID_object.find(sign) != ID_object.end())
-				{
-					pole[i][g] = &ID_object[sign];
-				}
-				else
-				{
-					pole[i][g] = &base;
+					file.get(sign);
+					if (sign == '\n')
+					{
+						g--;
+					}
+					else if (sign == player.get_sign())
+					{
+						pole[i][g] = &player;
+						player.set_i_g(i, g);
+					}
+					else if (ID_object.find(sign) != ID_object.end())
+					{
+						pole[i][g] = &ID_object[sign];
+					}
+					else
+					{
+						pole[i][g] = &base;
+					}
 				}
 			}
 		}
+	
 		file.close();
 	}
 	void work_inventory()

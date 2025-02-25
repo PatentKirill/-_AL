@@ -9,6 +9,7 @@
 
 #include <fstream>
 
+
 class Object
 {
 protected:
@@ -46,6 +47,17 @@ public:
 	}
 	
 };
+
+//Object base{ ' ', LightGray, Black, true }; //базовый блок
+//Object wall{ '|', DarkGray, DarkGray, false };
+//
+//
+//std::map<char, Object> ID_object
+//{
+//	{base.get_sign(), base},
+//	{wall.get_sign(), wall}
+//};
+#include "ID_Object.h"
 
 class Living_Object: public Object
 {

@@ -1,5 +1,5 @@
 #pragma once
-#include "Class_object.h"
+//#include "Class_object.h"
 #include "Class_item.h"
 #include <map>
 
