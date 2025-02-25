@@ -1,8 +1,11 @@
 #include "include.h"
 #include "Class_pole.h"
 
-char name[100]{ "file.txt" };
-Total_pole pole( name );
+#include <string>
+
+std::string name_start_pole{ "default_start_pole.txt" };
+std::string save_start_pole{ "save_start_pole.txt" };
+Total_pole pole( name_start_pole );
 
 //aaaaaaaaadffffdftyhgyhddffggsdfersdzaa
 void control()
@@ -35,18 +38,31 @@ void control()
 			pole.work_inventory();
 			Sleep(time);
 		}
-		
+		else if (GetKeyState('Q') & 0x8000)
+		{
+			pole.save(save_start_pole);
+			Sleep(time);
+		}
+		else if (GetKeyState('E') & 0x8000)
+		{
+			pole.load(save_start_pole, true);
+			pole.print();
+			Sleep(time);
+		}
 	}
 	
 }
 
 int main()
 {
+	
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 	pole.print();
-	
+
+
 	std::future<void> f_1 = std::async(control);
+	
 }
 
 

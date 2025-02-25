@@ -5,16 +5,21 @@
 #include <windows.h>
 #include <string>
 
+
 //недоделанный класс, можешь забить
 
 class Item
 {
 protected:
-	std::string sign;
+	int ID;
 	int meaning;
 	std::string name;
 	std::string description;
 public:
+	int get_ID()
+	{
+		return ID;
+	}
 	std::string get_name()
 	{
 		return name;
@@ -23,11 +28,11 @@ public:
 	{
 		return description;
 	}
-	Item(std::string name, std::string description, int meaning, std::string sign) : name{ name }, description{ description }, meaning{meaning}, sign{sign}
+	Item(std::string name, std::string description, int meaning, int ID) : name{ name }, description{ description }, meaning{ meaning }, ID{ ID }
 	{
 
 	}
-	Item() : name{ "Пустота" }, description{ "Тут ничего нет" }, meaning{ 0 }, sign{' '}
+	Item() : name{ "Пустота" }, description{ "Тут ничего нет" }, meaning{ 0 }, ID{ 0 }
 	{}
 	void print()
 	{
@@ -54,7 +59,7 @@ public:
 class Wooden_Sword: public Item
 {
 public:
-	Wooden_Sword() : Item("Деревянный меч", "Обычный меч", 6, "W_S")
+	Wooden_Sword() : Item("Деревянный меч", "Обычный меч", 6, 1)
 	{}
 	virtual bool active_use(int& HP, int& max_HP, int& damage, int& defence, int& lighting_level)//для вещей которые можно держать в руке и для брони
 	{
@@ -71,7 +76,7 @@ public:
 class Burning_Sword : public Item
 {
 public:
-	Burning_Sword() : Item("Огненный меч", "Он горит", 15, "B")
+	Burning_Sword() : Item("Огненный меч", "Он горит", 15, 2)
 	{}
 	virtual bool active_use(int& HP, int& max_HP, int& damage, int& defence, int& lighting_level)//для вещей которые можно держать в руке и для брони
 	{
@@ -88,7 +93,7 @@ public:
 class Torch: public Item
 {
 public:
-	Torch() : Item("Факел", "Освещает вам путь", 5, "T")
+	Torch() : Item("Факел", "Освещает вам путь", 5, 3)
 	{}
 	virtual bool active_use(int& HP, int& max_HP, int& damage, int& defence, int& lighting_level)//для вещей которые можно держать в руке и для брони
 	{
@@ -107,7 +112,7 @@ public:
 class Health_Potion : public Item
 {
 public:
-	Health_Potion() : Item("Зелье здоровья", "Восстонавливает 5 здоровья", 5, "H_P")
+	Health_Potion() : Item("Зелье здоровья", "Восстонавливает 5 здоровья", 5, 4)
 	{
 	}
 	virtual bool use(int& HP, int& max_HP, int& damage, int& defence, int& lighting_level)
@@ -121,9 +126,9 @@ public:
 class  Potion_Life : public Item
 {
 public:
-	Potion_Life() : Item("Зелье жизни", "делает вас более живым(увеличивает макс. здоровье)", 10, "P_L")
+	Potion_Life() : Item("Зелье жизни", "делает вас более живым(увеличивает макс. здоровье)", 10, 5)
 	{
-	std:to_string(item);
+
 	}
 	virtual bool use(int& HP, int& max_HP, int& damage, int& defence, int& lighting_level)
 	{
@@ -132,10 +137,7 @@ public:
 	}
 };
 
-Item item;
-Potion_Life  potion_life;
-Health_Potion health_potion;
-Wooden_Sword wooden_Sword;
+
 
 
 

@@ -3,7 +3,7 @@
 #include "include.h"
 #include <fstream>
 #include <Windows.h>
-
+#include "ID_Object.h"
 
 
 
@@ -13,79 +13,110 @@ class Total_pole
 protected:
 	int raz_i; //размеры поля
 	int raz_g;
-	Object base; //базовый блок
-	Object wall;
 	std::ifstream file;
-	Object*** pole;
 	static Player player;//игрок
-
+	Object*** pole;
 public:
 	Player& get_player()
 	{
 		return player;
 	}
-	Total_pole(char* name_file): raz_i{},raz_g{}, base{' ', LightGray, Black, true}, wall{'|', DarkGray, DarkGray, false}
+	Total_pole(std::string name_file) : raz_i{}, raz_g{}
 	{
-		player.set_recent_object(&base);
 		file.open(name_file);
 		if (file.is_open())
 		{
 			char sign;
-			file >> raz_i; //считывание разеров из файла
-			file >> raz_g;
-			
-			Sleep(3000);
-			pole = new Object** [raz_i];
+			while (file.get(sign))
+			{
+				raz_g++;
+				if (sign == '\n')
+				{
+					raz_i++;
+					raz_g = 0;
+				}
+			}
+			raz_i++;
+			player.set_recent_object(&base);
+			pole = new Object * *[raz_i];
 			// выделяем память под двухмерный массив
 
 			for (int i = 0; i < raz_i; i++)
 			{
-				pole[i] = new Object * [raz_g];
+				pole[i] = new Object* [raz_g];
 			}
-			file.get(sign);
-			while (sign != '\n')//ищем переход на новую строчку
-			{
-				file.get(sign);
-			}
-			for (int i = 0; i < raz_i; i++)//чтение из файла и запись в поле
-			{
-				for (int g = 0; g < raz_g; g++)
-				{
-					file.get(sign);
-					if (sign == base.get_sign())
-					{
-						pole[i][g] = &base;
-					}
-					else if (sign == wall.get_sign())
-					{
-						pole[i][g] = &wall;
-					}
-					else if (sign == player.get_sign())
-					{
-						pole[i][g] = &player;
-						player.set_i_g(i, g);
-					}
-					else if (sign == '\n')
-					{
-						g--;
-					}
-					else
-					{
-						pole[i][g] = &base;
-					}
-				}
-			}
-			
+			file.close();
+			load(name_file, false);
 		}
 		else
 		{
-			std::cout << "Ошибка. Файл не удалось открыть\n";
+			std::cout << "Ошибка\n";
+			file.close();
 		}
+
+		
 
 
 
 	}
 
+	void save(std::string name_file)
+	{
+		std::ofstream offile(name_file);
+		player.save("player_save.txt");
+		if (offile.is_open())
+		{
+			for (int i = 0; i < raz_i; i++)
+			{
+				for (int g = 0; g < raz_g; g++)
+				{
+					offile << pole[i][g]->get_sign();
+				}
+				offile << '\n';
+			}
+		}
+		else
+		{
+			std::cout << "Ошибка save\n";
+		}
+		offile.close();
+	}
+	void load(std::string name_file, bool save_player)
+	{
+
+
+		file.open(name_file);
+		if (save_player)
+		{
+			player.load("player_save.txt");
+		}
+		char sign;
+		for (int i = 0; i < raz_i; i++)//чтение из файла и запись в поле
+		{
+			for (int g = 0; g < raz_g; g++)
+			{
+				file.get(sign);
+				if (sign == '\n')
+				{
+					g--;
+				}
+				else if (sign == player.get_sign())
+				{
+					pole[i][g] = &player;
+					player.set_i_g(i, g);
+				}
+				else if (ID_object.find(sign) != ID_object.end())
+				{
+					pole[i][g] = &ID_object[sign];
+				}
+				else
+				{
+					pole[i][g] = &base;
+				}
+			}
+		}
+		file.close();
+	}
 	void work_inventory()
 	{
 		

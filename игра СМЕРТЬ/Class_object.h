@@ -4,6 +4,10 @@
 #include <iomanip>
 #include <Windows.h>
 #include <algorithm>
+//#include "ID_Object.h" // ошибка из-за этой строчки
+#include "ID_Item.h"
+
+#include <fstream>
 
 class Object
 {
@@ -53,8 +57,8 @@ protected:
 	int damage;
 	int defence;
 	Object* recent_object;//блок над которым стоит существо
-	Living_Object(char sign, ConsoleColor text, ConsoleColor baground, int max_HP, int Damage, int Defence) : Object(sign, text, baground, false), i{ -1 }, g{ -1 }, HP{ 100 }, 
-	max_HP{ max_HP }, damage{Damage}, defence{Defence}
+	Living_Object(char sign, ConsoleColor text, ConsoleColor baground, int max_HP, int Damage, int Defence) : Object(sign, text, baground, false), i{ -1 }, g{ -1 }, HP{ max_HP }, 
+	max_HP{ max_HP }, damage{Damage}, defence{Defence}, recent_object{new Object}
 	{}
 public:
 	void set_i_g(int i, int g)
@@ -96,9 +100,42 @@ public:
 		{
 			inventory[i] = new Item;
 		}
-		inventory[1] = new Wooden_Sword;
-		inventory[2] = new Health_Potion;
-		inventory[3] = new Torch;
+		
+	}
+	void save(std::string name_file)
+	{
+		std::ofstream file(name_file);
+		if (file.is_open())
+		{
+			file << max_HP << " " << HP << " " << damage << " " << defence << " " << lighting_level << " " << recent_object->get_sign() << '\n';
+			for (int i = 0; i < raz_inventory; i++)
+			{
+				file << inventory[i]->get_ID() << ' ';
+			}
+		}
+		else
+		{
+			std::cout << "Ошибка save\n";
+		}
+	}
+	void load(std::string name_file)
+	{
+		std::ifstream file(name_file);
+		if (file.is_open())
+		{
+			char prom;
+			file >> max_HP >> HP >> damage >> defence >> lighting_level >> prom;
+			
+			for (int i = 0, ID = 0; i < raz_inventory; i++)
+			{
+				file >> ID;
+				inventory[i] = &ID_item[ID];
+			}
+		}
+		else
+		{
+			std::cout << "Ошибка load\n";
+		}
 	}
 	void print_inventory()
 	{
