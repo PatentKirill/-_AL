@@ -4,6 +4,7 @@
 #include <iomanip>
 #include <Windows.h>
 #include <algorithm>
+#include <conio.h>
 //#include "ID_Object.h" // ошибка из-за этой строчки
 #include "ID_Item.h"
 
@@ -15,6 +16,7 @@ class Object
 protected:
 	bool passable; //можно ли встать на этот объект
 	char sign;
+	bool fight;
 	ConsoleColor text; // цвет текста
 	ConsoleColor baground; //фон текста
 public:
@@ -22,12 +24,12 @@ public:
 	{
 		return pole[i_player][g_player] == sign;
 	}
-	Object(char sign, ConsoleColor text, ConsoleColor baground, bool passable): sign{sign},  //конструктор
-	text{text}, baground{baground}, passable{passable}
+	Object(char sign, ConsoleColor text, ConsoleColor baground, bool passable, bool fight): sign{sign},  //конструктор
+	text{text}, baground{baground}, passable{passable}, fight{fight}
 	{}
 	Object()//забей
 	{
-		sign = ' ';
+	
 	}
 	void print()//вывод с изменением цвета
 	{
@@ -36,6 +38,11 @@ public:
 		SetColor(LightGray, Black);
 	}
 	
+	bool get_fight()
+	{
+		return fight;
+	}
+
 	bool get_passable()
 	{
 		return passable;
@@ -45,21 +52,21 @@ public:
 	{
 		return sign;
 	}
+	// далее чисто виртуальные методы для класса Monster
+	virtual ~Object()
+	{
+
+	}
 	
+	
+
 };
 
-//Object base{ ' ', LightGray, Black, true }; //базовый блок
-//Object wall{ '|', DarkGray, DarkGray, false };
-//
-//
-//std::map<char, Object> ID_object
-//{
-//	{base.get_sign(), base},
-//	{wall.get_sign(), wall}
-//};
-#include "ID_Object.h"
 
-class Living_Object: public Object
+class Monster;
+class Player;
+
+class Living_Object : public Object
 {
 protected:
 	int i;
@@ -69,10 +76,17 @@ protected:
 	int damage;
 	int defence;
 	Object* recent_object;//блок над которым стоит существо
-	Living_Object(char sign, ConsoleColor text, ConsoleColor baground, int max_HP, int Damage, int Defence) : Object(sign, text, baground, false), i{ -1 }, g{ -1 }, HP{ max_HP }, 
-	max_HP{ max_HP }, damage{Damage}, defence{Defence}, recent_object{new Object}
+	std::string name;
+	Living_Object(char sign, ConsoleColor text, ConsoleColor baground, bool fight, int max_HP, int Damage, int Defence, Object* recent_object, std::string name) : Object(sign, text, baground, false, fight), i{ -1 }, g{ -1 }, HP{ max_HP },
+	max_HP{ max_HP }, damage{ Damage }, defence{ Defence }, recent_object{ recent_object }, name{name}
 	{}
 public:
+	Living_Object() : Object()
+	{
+	}
+	virtual ~Living_Object()
+	{
+	}
 	void set_i_g(int i, int g)
 	{
 		this->i = i;
@@ -94,8 +108,47 @@ public:
 	{
 		return recent_object;
 	}
+	void w()
+	{
+		i--;
+	}
+	void s()
+	{
+		i++;
+	}
+	void a()
+	{
+		g--;
+	}
+	void d()
+	{
+		g++;
+	}
+
+
+	void fight(Monster* enemy, Player* player);
+	void fight_print(Monster* enemy, Player* player);
+	
+
+	void attack(Living_Object* enemy, std::string name)
+	{
+		srand(time(NULL));
+		if (enemy)
+		{
+			int prom_damage{ damage };
+			int kol_defence = 1 + rand() % enemy->defence;
+			prom_damage -= kol_defence;
+			std::cout << name << " защитился на " << kol_defence << "\n";
+			_getch();
+			std::cout << name << " получил урон на " << prom_damage << "\n";
+			_getch();
+		}
+	}
 };
 
+#include "Class_Monster.h"
+
+#include "ID_Object.h" //должно быть перед Player
 
 class Player: public Living_Object
 {
@@ -104,7 +157,7 @@ class Player: public Living_Object
 	Item* inventory[10]; //[0]  - рука, туда можно поставить только определённые вещи
 	
 public:
-	Player(char sign, ConsoleColor text, ConsoleColor baground, int max_HP, int Damage, int Defence) : Living_Object(sign, text, baground, max_HP, Damage, Defence),
+	Player(char sign, ConsoleColor text, ConsoleColor baground, int max_HP, int Damage, int Defence) : Living_Object(sign, text, baground, max_HP, Damage, Defence, true, &base, "Ты"),
 		raz_inventory{ 10 }
 	{
 		lighting_level = 3;
@@ -130,6 +183,11 @@ public:
 			std::cout << "Ошибка save\n";
 		}
 	}
+	void print_player()
+	{
+		std::cout << name << ":\n" << "HP:  " << max_HP << '/' << HP << "\tDamage:  " << damage << "\tDefence:  " << defence << '\n';
+	}
+
 	void load(std::string name_file)
 	{
 		std::ifstream file(name_file);
@@ -137,7 +195,7 @@ public:
 		{
 			char prom;
 			file >> max_HP >> HP >> damage >> defence >> lighting_level >> prom;
-			
+			recent_object = &ID_object[prom];
 			for (int i = 0, ID = 0; i < raz_inventory; i++)
 			{
 				file >> ID;
@@ -161,7 +219,7 @@ public:
 		}
 		std::cout << "\n\nЧто вы хотите сделать? 0 - поставить предмет в руку; U - использовать предмет\n";
 	}
-	void work_inventory()
+	void work_inventory(bool one)
 	{
 		print_inventory();
 
@@ -177,7 +235,7 @@ public:
 				int num{-1};
 				while (num == -1)
 				{
-					for (int i = 1; i <= 9; ++i)
+					for (int i = 1; i < raz_inventory; ++i)
 					{
 						if (GetKeyState('0' + i) & 0x8000)
 						{
@@ -191,6 +249,10 @@ public:
 				if (inventory[num]->active_use(HP, max_HP, damage, defence, lighting_level))
 				{
 					std::swap(inventory[num], inventory[0]);
+					if (one)
+					{
+						return;
+					}
 				}
 				else
 				{
@@ -223,6 +285,11 @@ public:
 				if (inventory[num]->use(HP, max_HP, damage, defence, lighting_level))
 				{
 					std::cout << "Предмет использован\n";
+					inventory[num] = &item;
+					if (one)
+					{
+						return;
+					}
 				}
 				else
 				{
@@ -243,26 +310,35 @@ public:
 		
 	}
 	
+
+
 	int get_lighting_level()
 	{
 		return lighting_level;
 	}
 
-	void w()
-	{
-		i--;
-	}
-	void s()
-	{
-		i++;
-	}
-	void a()
-	{
-		g--;
-	}
-	void d()
-	{
-		g++;
-	}
+	
 
 };
+
+void Living_Object::fight_print(Monster* enem, Player* playe)
+{
+	system("cls");
+	playe->print_player();
+	enem->print_Monster();
+}
+
+void Living_Object::fight(Monster* enemy, Player* player)
+{
+	fight_print(enemy, player);
+	std::cout << "Что вы хотите сделать?\n";
+	while (_getch() != '\r') {}
+}
+
+
+
+
+
+
+
+

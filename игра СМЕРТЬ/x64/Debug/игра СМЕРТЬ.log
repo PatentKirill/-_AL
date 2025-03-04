@@ -1,2 +1,8 @@
 ﻿  main.cpp
-  игра СМЕРТЬ.vcxproj -> C:\Users\Top2\Desktop\-_AL-main\x64\Debug\игра СМЕРТЬ.exe
+C:\Users\User\Desktop\-_AL-main\игра СМЕРТЬ\Class_object.h(135,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  (компиляция исходного файла "main.cpp")
+  
+C:\Users\User\Desktop\-_AL-main\игра СМЕРТЬ\Class_pole.h(206,13): warning C4244: аргумент: преобразование "time_t" в "unsigned int", возможна потеря данных
+  (компиляция исходного файла "main.cpp")
+  
+  игра СМЕРТЬ.vcxproj -> C:\Users\User\Desktop\-_AL-main\x64\Debug\игра СМЕРТЬ.exe

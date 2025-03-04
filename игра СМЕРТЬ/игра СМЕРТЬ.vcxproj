@@ -131,6 +131,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Class_item.h" />
+    <ClInclude Include="Class_Monster.h" />
     <ClInclude Include="Class_object.h" />
     <ClInclude Include="Class_pole.h" />
     <ClInclude Include="color.h" />
